@@ -1,6 +1,7 @@
 const modal = document.querySelector('#modal');
 const content = document.querySelector('#content');
 const backdrop = document.querySelector('#backdrop');
+const progress = document.querySelector('#progress');
 
 content.addEventListener('click', openCard);
 backdrop.addEventListener('click', closeModal);
@@ -91,11 +92,49 @@ function closeModal() {
 }
 
 function init() {
+  renderCards();
+  renderProgress();
+}
+
+function renderCards() {
   if (technologies.length === 0) {
     content.innerHTML = '<p class="empty">No technologies available.</p>';
   } else {
     content.innerHTML = technologies.map(addTechnology).join('');
   }
+}
+
+function renderProgress() {
+  const percent = computeProgressPercent();
+
+  let backgroundColor;
+  if (percent >= 80) {
+    backgroundColor = '#4caf50';
+  } else if (percent >= 30) {
+    backgroundColor = '#ff9800';
+  } else {
+    backgroundColor = '#f44336';
+  }
+
+  progress.style.backgroundColor = backgroundColor;
+  progress.style.width = `${percent}%`;
+  progress.textContent = `${percent}` ? `${percent}%` : '';
+  console.log(percent);
+}
+
+function computeProgressPercent() {
+  if (technologies.length === 0) {
+    return 0;
+  }
+
+  let doneCount = 0;
+  technologies.forEach(tech => {
+    if (tech.done) {
+      doneCount++;
+    }
+  });
+
+  return Math.round((doneCount / technologies.length) * 100);
 }
 
 function addTechnology(tech) {
