@@ -5,10 +5,13 @@ const progress = document.querySelector('#progress');
 
 content.addEventListener('click', openCard);
 backdrop.addEventListener('click', closeModal);
+modal.addEventListener('change', toggleTech)
+
+const APP_TITLE = document.title;
 
 const technologies = [
   {
-    name: 'HTML',
+    title: 'HTML',
     description:
       'HyperText Markup Language is the standard markup language for documents designed to be displayed in a web browser.',
     type: 'html',
@@ -17,7 +20,7 @@ const technologies = [
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
   },
   {
-    name: 'CSS',
+    title: 'CSS',
     description:
       'Cascading Style Sheets is a style sheet language used for describing the presentation of a document written in HTML or XML.',
     type: 'css',
@@ -26,7 +29,7 @@ const technologies = [
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
   },
   {
-    name: 'Sass',
+    title: 'Sass',
     description:
       'Sass is a preprocessor scripting language that is interpreted or compiled into Cascading Style Sheets.',
     type: 'sass',
@@ -35,7 +38,7 @@ const technologies = [
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg',
   },
   {
-    name: 'Bootstrap',
+    title: 'Bootstrap',
     description:
       'Bootstrap is a free and open-source CSS framework directed at responsive, mobile-first front-end web development.',
     type: 'bootstrap',
@@ -44,7 +47,7 @@ const technologies = [
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg',
   },
   {
-    name: 'Git',
+    title: 'Git',
     description:
       'Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.',
     type: 'git',
@@ -53,7 +56,7 @@ const technologies = [
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg',
   },
   {
-    name: 'Node.js',
+    title: 'Node.js',
     description:
       'Node.js is an open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.',
     type: 'nodejs',
@@ -62,7 +65,7 @@ const technologies = [
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
   },
   {
-    name: 'JavaScript',
+    title: 'JavaScript',
     description:
       'JavaScript is a high-level, often just-in-time compiled, and multi-paradigm programming language.',
     type: 'javascript',
@@ -71,7 +74,7 @@ const technologies = [
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
   },
   {
-    name: 'React',
+    title: 'React',
     description:
       'React is a free and open-source front-end JavaScript library for building user interfaces based on UI components.',
     type: 'react',
@@ -83,11 +86,45 @@ const technologies = [
 
 // const technologies = [];
 
-function openCard() {
+function openCard(event) {
+  const data = event.target.dataset;
+  const tech = technologies.find(t => t.type === data.type);
+  if (!tech) {
+    return;
+  }
+
+  openModal(toModal(tech), tech.title);
+}
+
+function toModal(tech) {
+  const checked = tech.done ? 'checked' : ''
+  return `
+  <h2>${tech.title}</h2>
+      <p>${tech.description}</p>
+      <hr />
+      <div>
+        <input type="checkbox" id="done" ${checked} data-type="${tech.type}" />
+        <label for="done">I have completed this technology</label>
+      </div>
+  `;
+}
+
+function toggleTech(event){
+const type = event.target.dataset.type;
+const tech = technologies.find(t => t.type === type);
+tech.done = event.target.checked
+
+init()
+}
+
+function openModal(html, title = APP_TITLE) {
+  document.title = `${title} | ${APP_TITLE}`;
+  modal.innerHTML = html;
   modal.classList.add('open');
 }
 
 function closeModal() {
+  document.title = APP_TITLE;
   modal.classList.remove('open');
 }
 
@@ -142,8 +179,8 @@ function addTechnology(tech) {
 
   return `
     <div class="card ${doneClass}" data-type="${tech.type}">
-      <img class="icon" src="${tech.image}" alt="${tech.name}" />
-      <h3>${tech.name}</h3>
+      <img class="icon" src="${tech.image}" alt="${tech.name}" data-type="${tech.type}" />
+      <h3 data-type="${tech.type}">${tech.title}</h3>
       <!-- <p>${tech.description}</p> -->
     </div>
   `;
