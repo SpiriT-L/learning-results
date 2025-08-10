@@ -2,10 +2,12 @@ const modal = document.querySelector('#modal');
 const content = document.querySelector('#content');
 const backdrop = document.querySelector('#backdrop');
 const progress = document.querySelector('#progress');
+const form = document.querySelector('#form');
 
 content.addEventListener('click', openCard);
 backdrop.addEventListener('click', closeModal);
-modal.addEventListener('change', toggleTech)
+modal.addEventListener('change', toggleTech);
+form.addEventListener('submit', createTech);
 
 const APP_TITLE = document.title;
 
@@ -97,7 +99,7 @@ function openCard(event) {
 }
 
 function toModal(tech) {
-  const checked = tech.done ? 'checked' : ''
+  const checked = tech.done ? 'checked' : '';
   return `
   <h2>${tech.title}</h2>
       <p>${tech.description}</p>
@@ -109,12 +111,12 @@ function toModal(tech) {
   `;
 }
 
-function toggleTech(event){
-const type = event.target.dataset.type;
-const tech = technologies.find(t => t.type === type);
-tech.done = event.target.checked
+function toggleTech(event) {
+  const type = event.target.dataset.type;
+  const tech = technologies.find(t => t.type === type);
+  tech.done = event.target.checked;
 
-init()
+  init();
 }
 
 function openModal(html, title = APP_TITLE) {
@@ -184,6 +186,40 @@ function addTechnology(tech) {
       <!-- <p>${tech.description}</p> -->
     </div>
   `;
+}
+
+function isInvalid(title, description) {
+  return !title.value || !description.value;
+}
+
+function createTech(event) {
+  event.preventDefault();
+
+  const { title, description } = event.target;
+
+  if (isInvalid(title, description)) {
+    if (!title.value) title.classList.add('invalid');
+    if (!description.value) description.classList.add('invalid');
+
+    setTimeout(() => {
+      title.classList.remove('invalid');
+      description.classList.remove('invalid');
+    }, 2000);
+
+    return;
+  }
+
+  const newTech = {
+    title: title.value,
+    description: description.value,
+    done: false,
+    type: title.value.toLowerCase(),
+  };
+
+  technologies.push(newTech);
+  title.value = '';
+  description.value = '';
+  init();
 }
 
 init();
