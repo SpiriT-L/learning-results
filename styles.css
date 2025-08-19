@@ -223,10 +223,6 @@ body {
   vertical-align: middle;
 }
 
-/* input.invalid,
-textarea.invalid {
-  border: var(--border-invalid);
-} */
 input.invalid,
 textarea.invalid {
   animation: highlightInvalid 2s forwards;
