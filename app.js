@@ -10,83 +10,9 @@ modal.addEventListener('change', toggleTech);
 form.addEventListener('submit', createTech);
 
 const APP_TITLE = document.title;
+const LS_KEY = 'MY_TECHNOLOGIES';
 
-const technologies = [
-  {
-    title: 'HTML',
-    description:
-      'HyperText Markup Language is the standard markup language for documents designed to be displayed in a web browser.',
-    type: 'html',
-    done: true,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
-  },
-  {
-    title: 'CSS',
-    description:
-      'Cascading Style Sheets is a style sheet language used for describing the presentation of a document written in HTML or XML.',
-    type: 'css',
-    done: true,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
-  },
-  {
-    title: 'Sass',
-    description:
-      'Sass is a preprocessor scripting language that is interpreted or compiled into Cascading Style Sheets.',
-    type: 'sass',
-    done: false,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg',
-  },
-  {
-    title: 'Bootstrap',
-    description:
-      'Bootstrap is a free and open-source CSS framework directed at responsive, mobile-first front-end web development.',
-    type: 'bootstrap',
-    done: false,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg',
-  },
-  {
-    title: 'Git',
-    description:
-      'Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.',
-    type: 'git',
-    done: false,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg',
-  },
-  {
-    title: 'Node.js',
-    description:
-      'Node.js is an open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.',
-    type: 'nodejs',
-    done: false,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
-  },
-  {
-    title: 'JavaScript',
-    description:
-      'JavaScript is a high-level, often just-in-time compiled, and multi-paradigm programming language.',
-    type: 'javascript',
-    done: false,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
-  },
-  {
-    title: 'React',
-    description:
-      'React is a free and open-source front-end JavaScript library for building user interfaces based on UI components.',
-    type: 'react',
-    done: false,
-    image:
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
-  },
-];
-
-// const technologies = [];
+const technologies = getState();
 
 function openCard(event) {
   const data = event.target.dataset;
@@ -116,6 +42,7 @@ function toggleTech(event) {
   const tech = technologies.find(t => t.type === type);
   tech.done = event.target.checked;
 
+  saveState();
   init();
 }
 
@@ -181,7 +108,6 @@ function addTechnology(tech) {
 
   return `
     <div class="card ${doneClass}" data-type="${tech.type}">
-      <img class="icon" src="${tech.image}" alt="${tech.name}" data-type="${tech.type}" />
       <h3 data-type="${tech.type}">${tech.title}</h3>
       <!-- <p>${tech.description}</p> -->
     </div>
@@ -219,7 +145,17 @@ function createTech(event) {
   technologies.push(newTech);
   title.value = '';
   description.value = '';
+  saveState();
   init();
+}
+
+function saveState() {
+  localStorage.setItem('LS_KEY', JSON.stringify(technologies));
+}
+
+function getState() {
+  const raw = localStorage.getItem('LS_KEY');
+  return raw ? JSON.parse(raw) : [];
 }
 
 init();
