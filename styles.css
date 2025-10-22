@@ -103,6 +103,8 @@ body {
 
 .modal {
   display: none;
+  width: 100%;
+  max-width: 31.25rem;
 }
 
 .modal.open {
@@ -111,7 +113,6 @@ body {
   top: 50px;
   left: 50%;
   transform: translateX(-50%);
-  width: 500px;
   background: #fff;
   z-index: 200;
   padding: 1rem;
